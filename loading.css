@@ -1,0 +1,1120 @@
+/* --- Main Container --- */
+.fhMJMp {
+  height: 100vh;
+  max-height: -webkit-fill-available;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/*
+  ================================================================
+  [REQUIRED] CSS for the Loader Animation
+  ================================================================
+  This is the CSS that was missing. It makes the SVG circles move.
+*/
+
+/* 
+  1. Define the animation for the red circle.
+  This keyframe will make the element "pulse" by scaling it down and up.
+*/
+@keyframes pulseRed {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+}
+
+/* 
+  2. Define the animation for the green circle.
+  We'll make it pulse with a slight delay to create a nice effect.
+*/
+@keyframes pulseGreen {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+}
+
+/* 
+  3. Apply the animations to the classes from your SVG.
+  We tell them to run the animation infinitely.
+*/
+.tux-loading__red_animation {
+  /* Run the 'pulseRed' animation over 1.5 seconds, and loop it forever. */
+  animation: pulseRed 1.5s infinite ease-in-out;
+  /* Set the origin point for scaling to the center of the circle */
+  transform-origin: 352.5px 138px;
+}
+
+.tux-loading__green_animation {
+  /* Run the 'pulseGreen' animation with a small delay. */
+  animation: pulseGreen 1.5s infinite ease-in-out;
+  animation-delay: 0.2s; /* This delay makes the animation look better */
+  /* Set the origin point for scaling to the center of the circle */
+  transform-origin: 111px 138px;
+}
+/* --- Utility Classes --- */
+.w-48 {
+  width: 48px;
+}
+
+.h-48 {
+  height: 48px;
+}
+
+.box-border {
+  box-sizing: border-box;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+/* --- Animation Classes --- */
+.tux-loading__red_animation {
+  -webkit-animation: red-animation 1s infinite normal;
+  animation: red-animation 1s infinite normal;
+}
+
+.tux-loading__green_animation {
+  -webkit-animation: green-animation 1s infinite normal;
+  animation: green-animation 1s infinite normal;
+}
+
+/* --- SVG Specific Styles --- */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* --- Keyframe Animations --- */
+@-webkit-keyframes red-animation {
+  0% {
+    cx: 352.5px;
+    r: 110px;
+  }
+  1.666% {
+    cx: 352px;
+    r: 110px;
+  }
+  3.333% {
+    cx: 351.5px;
+    r: 110px;
+  }
+  5% {
+    cx: 350.5px;
+    r: 110px;
+  }
+  6.666% {
+    cx: 349px;
+    r: 109px;
+  }
+  8.333% {
+    cx: 347px;
+    r: 109px;
+  }
+  10% {
+    cx: 344px;
+    r: 107px;
+  }
+  11.666% {
+    cx: 341px;
+    r: 106px;
+  }
+  13.333% {
+    cx: 336.5px;
+    r: 104px;
+  }
+  15% {
+    cx: 331.5px;
+    r: 102px;
+  }
+  16.666% {
+    cx: 325px;
+    r: 98px;
+  }
+  18.333% {
+    cx: 316.5px;
+    r: 92px;
+  }
+  20% {
+    cx: 306px;
+    r: 84px;
+  }
+  21.666% {
+    cx: 292.5px;
+    r: 75px;
+  }
+  23.333% {
+    cx: 272.5px;
+    r: 72px;
+  }
+  25% {
+    cx: 231.5px;
+    r: 71px;
+  }
+  26.666% {
+    cx: 188px;
+    r: 72px;
+  }
+  28.333% {
+    cx: 169px;
+    r: 76px;
+  }
+  30% {
+    cx: 155.5px;
+    r: 84px;
+  }
+  31.666% {
+    cx: 145.5px;
+    r: 93px;
+  }
+  33.333% {
+    cx: 137.5px;
+    r: 98px;
+  }
+  35% {
+    cx: 131px;
+    r: 102px;
+  }
+  36.666% {
+    cx: 125.5px;
+    r: 104px;
+  }
+  38.333% {
+    cx: 122px;
+    r: 106px;
+  }
+  40% {
+    cx: 118.5px;
+    r: 108px;
+  }
+  41.666% {
+    cx: 116px;
+    r: 109px;
+  }
+  43.333% {
+    cx: 114px;
+    r: 109px;
+  }
+  45% {
+    cx: 112.5px;
+    r: 110px;
+  }
+  46.666% {
+    cx: 111.5px;
+    r: 110px;
+  }
+  48.333% {
+    cx: 111px;
+    r: 110px;
+  }
+  50% {
+    cx: 110px;
+    r: 110px;
+  }
+  51.666% {
+    cx: 110px;
+    r: 111px;
+  }
+  53.333% {
+    cx: 111px;
+    r: 111px;
+  }
+  55% {
+    cx: 111.5px;
+    r: 111px;
+  }
+  56.666% {
+    cx: 113px;
+    r: 111px;
+  }
+  58.333% {
+    cx: 115.5px;
+    r: 112px;
+  }
+  60% {
+    cx: 118px;
+    r: 113px;
+  }
+  61.666% {
+    cx: 121px;
+    r: 114px;
+  }
+  63.333% {
+    cx: 125.5px;
+    r: 115px;
+  }
+  65% {
+    cx: 130.5px;
+    r: 117px;
+  }
+  66.666% {
+    cx: 137px;
+    r: 120px;
+  }
+  68.333% {
+    cx: 145px;
+    r: 124px;
+  }
+  70% {
+    cx: 155px;
+    r: 130px;
+  }
+  71.666% {
+    cx: 168.5px;
+    r: 135px;
+  }
+  73.333% {
+    cx: 188px;
+    r: 138px;
+  }
+  75% {
+    cx: 231.5px;
+    r: 138px;
+  }
+  76.666% {
+    cx: 275.5px;
+    r: 138px;
+  }
+  78.333% {
+    cx: 294.5px;
+    r: 135px;
+  }
+  80% {
+    cx: 307.5px;
+    r: 129px;
+  }
+  81.666% {
+    cx: 317.5px;
+    r: 123px;
+  }
+  83.333% {
+    cx: 325.5px;
+    r: 119px;
+  }
+  85% {
+    cx: 332px;
+    r: 117px;
+  }
+  86.666% {
+    cx: 337px;
+    r: 115px;
+  }
+  88.333% {
+    cx: 341px;
+    r: 114px;
+  }
+  90% {
+    cx: 344.5px;
+    r: 113px;
+  }
+  91.666% {
+    cx: 347px;
+    r: 112px;
+  }
+  93.333% {
+    cx: 349px;
+    r: 111px;
+  }
+  95% {
+    cx: 350.5px;
+    r: 111px;
+  }
+  96.666% {
+    cx: 352px;
+    r: 111px;
+  }
+  98.333% {
+    cx: 352px;
+    r: 111px;
+  }
+  to {
+    cx: 352.5px;
+    r: 110px;
+  }
+}
+
+@keyframes red-animation {
+  0% {
+    cx: 352.5px;
+    r: 110px;
+  }
+  1.666% {
+    cx: 352px;
+    r: 110px;
+  }
+  3.333% {
+    cx: 351.5px;
+    r: 110px;
+  }
+  5% {
+    cx: 350.5px;
+    r: 110px;
+  }
+  6.666% {
+    cx: 349px;
+    r: 109px;
+  }
+  8.333% {
+    cx: 347px;
+    r: 109px;
+  }
+  10% {
+    cx: 344px;
+    r: 107px;
+  }
+  11.666% {
+    cx: 341px;
+    r: 106px;
+  }
+  13.333% {
+    cx: 336.5px;
+    r: 104px;
+  }
+  15% {
+    cx: 331.5px;
+    r: 102px;
+  }
+  16.666% {
+    cx: 325px;
+    r: 98px;
+  }
+  18.333% {
+    cx: 316.5px;
+    r: 92px;
+  }
+  20% {
+    cx: 306px;
+    r: 84px;
+  }
+  21.666% {
+    cx: 292.5px;
+    r: 75px;
+  }
+  23.333% {
+    cx: 272.5px;
+    r: 72px;
+  }
+  25% {
+    cx: 231.5px;
+    r: 71px;
+  }
+  26.666% {
+    cx: 188px;
+    r: 72px;
+  }
+  28.333% {
+    cx: 169px;
+    r: 76px;
+  }
+  30% {
+    cx: 155.5px;
+    r: 84px;
+  }
+  31.666% {
+    cx: 145.5px;
+    r: 93px;
+  }
+  33.333% {
+    cx: 137.5px;
+    r: 98px;
+  }
+  35% {
+    cx: 131px;
+    r: 102px;
+  }
+  36.666% {
+    cx: 125.5px;
+    r: 104px;
+  }
+  38.333% {
+    cx: 122px;
+    r: 106px;
+  }
+  40% {
+    cx: 118.5px;
+    r: 108px;
+  }
+  41.666% {
+    cx: 116px;
+    r: 109px;
+  }
+  43.333% {
+    cx: 114px;
+    r: 109px;
+  }
+  45% {
+    cx: 112.5px;
+    r: 110px;
+  }
+  46.666% {
+    cx: 111.5px;
+    r: 110px;
+  }
+  48.333% {
+    cx: 111px;
+    r: 110px;
+  }
+  50% {
+    cx: 110px;
+    r: 110px;
+  }
+  51.666% {
+    cx: 110px;
+    r: 111px;
+  }
+  53.333% {
+    cx: 111px;
+    r: 111px;
+  }
+  55% {
+    cx: 111.5px;
+    r: 111px;
+  }
+  56.666% {
+    cx: 113px;
+    r: 111px;
+  }
+  58.333% {
+    cx: 115.5px;
+    r: 112px;
+  }
+  60% {
+    cx: 118px;
+    r: 113px;
+  }
+  61.666% {
+    cx: 121px;
+    r: 114px;
+  }
+  63.333% {
+    cx: 125.5px;
+    r: 115px;
+  }
+  65% {
+    cx: 130.5px;
+    r: 117px;
+  }
+  66.666% {
+    cx: 137px;
+    r: 120px;
+  }
+  68.333% {
+    cx: 145px;
+    r: 124px;
+  }
+  70% {
+    cx: 155px;
+    r: 130px;
+  }
+  71.666% {
+    cx: 168.5px;
+    r: 135px;
+  }
+  73.333% {
+    cx: 188px;
+    r: 138px;
+  }
+  75% {
+    cx: 231.5px;
+    r: 138px;
+  }
+  76.666% {
+    cx: 275.5px;
+    r: 138px;
+  }
+  78.333% {
+    cx: 294.5px;
+    r: 135px;
+  }
+  80% {
+    cx: 307.5px;
+    r: 129px;
+  }
+  81.666% {
+    cx: 317.5px;
+    r: 123px;
+  }
+  83.333% {
+    cx: 325.5px;
+    r: 119px;
+  }
+  85% {
+    cx: 332px;
+    r: 117px;
+  }
+  86.666% {
+    cx: 337px;
+    r: 115px;
+  }
+  88.333% {
+    cx: 341px;
+    r: 114px;
+  }
+  90% {
+    cx: 344.5px;
+    r: 113px;
+  }
+  91.666% {
+    cx: 347px;
+    r: 112px;
+  }
+  93.333% {
+    cx: 349px;
+    r: 111px;
+  }
+  95% {
+    cx: 350.5px;
+    r: 111px;
+  }
+  96.666% {
+    cx: 352px;
+    r: 111px;
+  }
+  98.333% {
+    cx: 352px;
+    r: 111px;
+  }
+  to {
+    cx: 352.5px;
+    r: 110px;
+  }
+}
+
+@-webkit-keyframes green-animation {
+  0% {
+    cx: 111px;
+    r: 111px;
+  }
+  1.666% {
+    cx: 111px;
+    r: 111px;
+  }
+  3.333% {
+    cx: 112.5px;
+    r: 111px;
+  }
+  5% {
+    cx: 114px;
+    r: 111px;
+  }
+  6.666% {
+    cx: 116px;
+    r: 112px;
+  }
+  8.333% {
+    cx: 119px;
+    r: 113px;
+  }
+  10% {
+    cx: 122px;
+    r: 114px;
+  }
+  11.666% {
+    cx: 126.5px;
+    r: 115px;
+  }
+  13.333% {
+    cx: 132px;
+    r: 117px;
+  }
+  15% {
+    cx: 138.5px;
+    r: 120px;
+  }
+  16.666% {
+    cx: 146.5px;
+    r: 124px;
+  }
+  18.333% {
+    cx: 157px;
+    r: 130px;
+  }
+  20% {
+    cx: 170.5px;
+    r: 135px;
+  }
+  21.666% {
+    cx: 190px;
+    r: 138px;
+  }
+  23.333% {
+    cx: 231.5px;
+    r: 138px;
+  }
+  25% {
+    cx: 275px;
+    r: 138px;
+  }
+  26.666% {
+    cx: 294.5px;
+    r: 135px;
+  }
+  28.333% {
+    cx: 307.5px;
+    r: 129px;
+  }
+  30% {
+    cx: 318px;
+    r: 123px;
+  }
+  31.666% {
+    cx: 325.5px;
+    r: 119px;
+  }
+  33.333% {
+    cx: 332px;
+    r: 117px;
+  }
+  35% {
+    cx: 337px;
+    r: 115px;
+  }
+  36.666% {
+    cx: 341.5px;
+    r: 114px;
+  }
+  38.333% {
+    cx: 344.5px;
+    r: 113px;
+  }
+  40% {
+    cx: 347px;
+    r: 112px;
+  }
+  41.666% {
+    cx: 349px;
+    r: 111px;
+  }
+  43.333% {
+    cx: 350.5px;
+    r: 111px;
+  }
+  45% {
+    cx: 352px;
+    r: 111px;
+  }
+  46.666% {
+    cx: 352px;
+    r: 111px;
+  }
+  48.333% {
+    cx: 352.5px;
+    r: 110px;
+  }
+  50% {
+    cx: 352px;
+    r: 110px;
+  }
+  51.666% {
+    cx: 351.5px;
+    r: 110px;
+  }
+  53.333% {
+    cx: 350.5px;
+    r: 110px;
+  }
+  55% {
+    cx: 349px;
+    r: 109px;
+  }
+  56.666% {
+    cx: 347px;
+    r: 109px;
+  }
+  58.333% {
+    cx: 345px;
+    r: 107px;
+  }
+  60% {
+    cx: 341.5px;
+    r: 106px;
+  }
+  61.666% {
+    cx: 337.5px;
+    r: 104px;
+  }
+  63.333% {
+    cx: 332.5px;
+    r: 102px;
+  }
+  65% {
+    cx: 326px;
+    r: 98px;
+  }
+  66.666% {
+    cx: 317.5px;
+    r: 92px;
+  }
+  68.333% {
+    cx: 307.5px;
+    r: 84px;
+  }
+  70% {
+    cx: 294.5px;
+    r: 76px;
+  }
+  71.666% {
+    cx: 275.5px;
+    r: 72px;
+  }
+  73.333% {
+    cx: 231.5px;
+    r: 71px;
+  }
+  75% {
+    cx: 188px;
+    r: 72px;
+  }
+  76.666% {
+    cx: 168.5px;
+    r: 75px;
+  }
+  78.333% {
+    cx: 155.5px;
+    r: 84px;
+  }
+  80% {
+    cx: 145px;
+    r: 93px;
+  }
+  81.666% {
+    cx: 137.5px;
+    r: 98px;
+  }
+  83.333% {
+    cx: 131px;
+    r: 102px;
+  }
+  85% {
+    cx: 125.5px;
+    r: 104px;
+  }
+  86.666% {
+    cx: 121.5px;
+    r: 106px;
+  }
+  88.333% {
+    cx: 118.5px;
+    r: 108px;
+  }
+  90% {
+    cx: 116px;
+    r: 109px;
+  }
+  91.666% {
+    cx: 114px;
+    r: 109px;
+  }
+  93.333% {
+    cx: 112.5px;
+    r: 110px;
+  }
+  95% {
+    cx: 111.5px;
+    r: 110px;
+  }
+  96.666% {
+    cx: 111px;
+    r: 110px;
+  }
+  98.333% {
+    cx: 110.5px;
+    r: 110px;
+  }
+  to {
+    cx: 111px;
+    r: 111px;
+  }
+}
+
+@keyframes green-animation {
+  0% {
+    cx: 111px;
+    r: 111px;
+  }
+  1.666% {
+    cx: 111px;
+    r: 111px;
+  }
+  3.333% {
+    cx: 112.5px;
+    r: 111px;
+  }
+  5% {
+    cx: 114px;
+    r: 111px;
+  }
+  6.666% {
+    cx: 116px;
+    r: 112px;
+  }
+  8.333% {
+    cx: 119px;
+    r: 113px;
+  }
+  10% {
+    cx: 122px;
+    r: 114px;
+  }
+  11.666% {
+    cx: 126.5px;
+    r: 115px;
+  }
+  13.333% {
+    cx: 132px;
+    r: 117px;
+  }
+  15% {
+    cx: 138.5px;
+    r: 120px;
+  }
+  16.666% {
+    cx: 146.5px;
+    r: 124px;
+  }
+  18.333% {
+    cx: 157px;
+    r: 130px;
+  }
+  20% {
+    cx: 170.5px;
+    r: 135px;
+  }
+  21.666% {
+    cx: 190px;
+    r: 138px;
+  }
+  23.333% {
+    cx: 231.5px;
+    r: 138px;
+  }
+  25% {
+    cx: 275px;
+    r: 138px;
+  }
+  26.666% {
+    cx: 294.5px;
+    r: 135px;
+  }
+  28.333% {
+    cx: 307.5px;
+    r: 129px;
+  }
+  30% {
+    cx: 318px;
+    r: 123px;
+  }
+  31.666% {
+    cx: 325.5px;
+    r: 119px;
+  }
+  33.333% {
+    cx: 332px;
+    r: 117px;
+  }
+  35% {
+    cx: 337px;
+    r: 115px;
+  }
+  36.666% {
+    cx: 341.5px;
+    r: 114px;
+  }
+  38.333% {
+    cx: 344.5px;
+    r: 113px;
+  }
+  40% {
+    cx: 347px;
+    r: 112px;
+  }
+  41.666% {
+    cx: 349px;
+    r: 111px;
+  }
+  43.333% {
+    cx: 350.5px;
+    r: 111px;
+  }
+  45% {
+    cx: 352px;
+    r: 111px;
+  }
+  46.666% {
+    cx: 352px;
+    r: 111px;
+  }
+  48.333% {
+    cx: 352.5px;
+    r: 110px;
+  }
+  50% {
+    cx: 352px;
+    r: 110px;
+  }
+  51.666% {
+    cx: 351.5px;
+    r: 110px;
+  }
+  53.333% {
+    cx: 350.5px;
+    r: 110px;
+  }
+  55% {
+    cx: 349px;
+    r: 109px;
+  }
+  56.666% {
+    cx: 347px;
+    r: 109px;
+  }
+  58.333% {
+    cx: 345px;
+    r: 107px;
+  }
+  60% {
+    cx: 341.5px;
+    r: 106px;
+  }
+  61.666% {
+    cx: 337.5px;
+    r: 104px;
+  }
+  63.333% {
+    cx: 332.5px;
+    r: 102px;
+  }
+  65% {
+    cx: 326px;
+    r: 98px;
+  }
+  66.666% {
+    cx: 317.5px;
+    r: 92px;
+  }
+  68.333% {
+    cx: 307.5px;
+    r: 84px;
+  }
+  70% {
+    cx: 294.5px;
+    r: 76px;
+  }
+  71.666% {
+    cx: 275.5px;
+    r: 72px;
+  }
+  73.333% {
+    cx: 231.5px;
+    r: 71px;
+  }
+  75% {
+    cx: 188px;
+    r: 72px;
+  }
+  76.666% {
+    cx: 168.5px;
+    r: 75px;
+  }
+  78.333% {
+    cx: 155.5px;
+    r: 84px;
+  }
+  80% {
+    cx: 145px;
+    r: 93px;
+  }
+  81.666% {
+    cx: 137.5px;
+    r: 98px;
+  }
+  83.333% {
+    cx: 131px;
+    r: 102px;
+  }
+  85% {
+    cx: 125.5px;
+    r: 104px;
+  }
+  86.666% {
+    cx: 121.5px;
+    r: 106px;
+  }
+  88.333% {
+    cx: 118.5px;
+    r: 108px;
+  }
+  90% {
+    cx: 116px;
+    r: 109px;
+  }
+  91.666% {
+    cx: 114px;
+    r: 109px;
+  }
+  93.333% {
+    cx: 112.5px;
+    r: 110px;
+  }
+  95% {
+    cx: 111.5px;
+    r: 110px;
+  }
+  96.666% {
+    cx: 111px;
+    r: 110px;
+  }
+  98.333% {
+    cx: 110.5px;
+    r: 110px;
+  }
+  to {
+    cx: 111px;
+    r: 111px;
+  }
+}
+
+/* ======================= 2. LOADER CSS ======================= */
+/* ADD THIS TO YOUR MAIN STYLESHEET */
+
+/* This class will be added to the body tag by JavaScript */
+body.loader-active {
+  /* Set the white background while loader is active */
+  background-color: #ffffff !important;
+
+  /* Prevent scrolling while loader is active */
+  overflow: hidden;
+}
+
+/* Hide all direct children of the body EXCEPT the loader */
+body.loader-active > *:not(#loader-container) {
+  /* This hides your content without breaking the layout */
+  visibility: hidden;
+}
+
+/* .background-color-ToastDefault {
+  background-color: var(--ToastDefault, rgba(84, 84, 84, 0.92));
+}
+
+.text-color-ConstTextInverse {
+  color: var(--ConstTextInverse, #fff);
+} */
