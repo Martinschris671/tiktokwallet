@@ -17,43 +17,120 @@
 
     <!-- ULTRA-SECURE GUARD SCRIPT (RUNS IMMEDIATELY) -->
     <script>
-      const SUPABASE_URL = "https://odhxccqsrvkfwvpjjmof.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kaHhjY3FzcnZrZnd2cGpqbW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDk5NzAsImV4cCI6MjA4NzkyNTk3MH0.rjyZ-GLvt2o-nwOWeUFWkdbzUG4ZXZOilYw8PHKovs8";
-      const supabaseClient = supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY,
-      );
+      // Wrap in an Immediately Invoked Function Expression (IIFE)
+      // so hackers can't access these variables in the console.
+      (async function () {
+        // 1. LOCK DOWN NATIVE FUNCTIONS
+        // Hackers try to disable redirects via console. This prevents that.
+        const originalReplace = window.location.replace.bind(window.location);
+        const originalAssign = window.location.assign.bind(window.location);
 
-      async function enforceSecurity() {
-        // 1. Check Session
-        const {
-          data: { session },
-        } = await supabaseClient.auth.getSession();
-        if (!session) {
-          window.location.replace("index.html");
-          return;
+        // Failsafe Kick Function
+        const NUKE_AND_KICK = (path) => {
+          document.body.innerHTML = "<h1>UNAUTHORIZED. REVOKING ACCESS...</h1>";
+          try {
+            originalReplace(path);
+          } catch (e) {
+            originalAssign(path);
+          }
+          setTimeout(() => {
+            window.location.href = path;
+          }, 500); // Failsafe 3
+        };
+
+        // 2. INSTANTLY WIPE THE DOM TO PREVENT LEAKS
+        // We save the body, clear it out, and only put it back if they are legit.
+        const safeDOM = document.body.innerHTML;
+        document.body.innerHTML = "";
+
+        // 3. INITIALIZE SUPABASE
+        const SUPABASE_URL = "https://odhxccqsrvkfwvpjjmof.supabase.co";
+        const SUPABASE_ANON_KEY =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kaHhjY3FzcnZrZnd2cGpqbW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDk5NzAsImV4cCI6MjA4NzkyNTk3MH0.rjyZ-GLvt2o-nwOWeUFWkdbzUG4ZXZOilYw8PHKovs8";
+
+        if (!window.supabase) {
+          alert("Critical security failure. Supabase not loaded.");
+          return NUKE_AND_KICK("index.html");
         }
 
-        // 2. Database Check: Do they have a non-expired key?
-        // Note: RLS ensures they can ONLY see their own keys.
-        const { data: validKeys, error } = await supabaseClient
-          .from("keys")
-          .select("expiration_timestamp")
-          .gt("expiration_timestamp", new Date().toISOString())
-          .limit(1);
+        const supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_ANON_KEY,
+        );
 
-        if (error || !validKeys || validKeys.length === 0) {
-          // Kick them back to the key entry page if no valid key is found
-          window.location.replace("key.html");
-        } else {
-          // They are allowed in! Show the website body.
-          document.body.style.display = "block";
+        // 4. THE CORE SECURITY CHECK
+        async function enforceSecurity() {
+          try {
+            // STEP A: Server-Side Auth Check
+            // Using getUser() forces a network request to validate the JWT.
+            // Cannot be bypassed by spoofing local storage.
+            const {
+              data: { user },
+              error: authError,
+            } = await supabaseClient.auth.getUser();
+
+            if (authError || !user) {
+              return window.location.pathname.includes("index.html")
+                ? null
+                : NUKE_AND_KICK("index.html");
+            }
+
+            // STEP B: Strict Database Check
+            // Fetch their latest activated key.
+            const { data: validKeys, error: dbError } = await supabaseClient
+              .from("keys")
+              .select("expiration_timestamp")
+              .eq("is_used", true) // Must be an activated key
+              .order("expiration_timestamp", { ascending: false })
+              .limit(1);
+
+            if (dbError || !validKeys || validKeys.length === 0) {
+              return NUKE_AND_KICK("key.html");
+            }
+
+            // STEP C: Strict Time Evaluation
+            // Convert DB timestamp to absolute milliseconds to prevent timezone bypassing
+            const expirationTime = new Date(
+              validKeys[0].expiration_timestamp,
+            ).getTime();
+            const currentTime = Date.now();
+
+            if (expirationTime <= currentTime) {
+              return NUKE_AND_KICK("key.html"); // Key is expired
+            }
+
+            // STEP D: ACCESS GRANTED
+            // Only if we make it here, restore the site content.
+            document.body.innerHTML = safeDOM;
+            const antiFlickerStyle =
+              document.getElementById("ultra-secure-guard");
+            if (antiFlickerStyle) antiFlickerStyle.remove(); // Remove the CSS hiding the page
+
+            // Force styling back to normal
+            document.body.style.display = "block";
+            document.body.style.opacity = "1";
+            document.body.style.visibility = "visible";
+          } catch (fatalError) {
+            // If they block network requests to bypass the check, this catches it and kicks them.
+            NUKE_AND_KICK("index.html");
+          }
         }
-      }
 
-      // Run security check immediately
-      enforceSecurity();
+        // 5. RUN INITIAL CHECK
+        await enforceSecurity();
+
+        // 6. REAL-TIME SESSION LISTENER
+        // If they log out in another tab, instantly kick them from this one.
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (event === "SIGNED_OUT" || !session) {
+            NUKE_AND_KICK("index.html");
+          }
+        });
+
+        // 7. BACKGROUND HEARTBEAT (POLLING)
+        // Check every 60 seconds. If their duration ends while using the app, kick them out.
+        setInterval(enforceSecurity, 60000);
+      })();
     </script>
   </head>
   <body>
