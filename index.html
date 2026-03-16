@@ -7,952 +7,8 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>Rewards Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="loading.css" />
-    <style>
-      /* --- Custom Fonts --- */
-      @font-face {
-        font-family: "TikTokSans";
-        src: url("fonts/TikTokSans-Regular.ttf") format("truetype");
-        font-weight: 400;
-        font-style: normal;
-      }
-      @font-face {
-        font-family: "TikTokSans";
-        src: url("fonts/TikTokSans-Medium.ttf") format("truetype");
-        font-weight: 500;
-        font-style: normal;
-      }
-      @font-face {
-        font-family: "TikTokSans";
-        src: url("fonts/TikTokSans-SemiBold.ttf") format("truetype");
-        font-weight: 600;
-        font-style: normal;
-      }
-      @font-face {
-        font-family: "TikTokSans";
-        src: url("fonts/TikTokSans-Bold.ttf") format("truetype");
-        font-weight: 700;
-        font-style: normal;
-      }
-
-      :root {
-        --bg-color: #f8f8f8;
-        --card-bg: #ffffff;
-        --text-primary: #161823;
-        --text-secondary: #8a8b91;
-        --text-tertiary: #b0b0b4;
-        --primary-red: #fe2c55;
-        --btn-secondary-bg: #f1f1f2;
-        --divider-color: #f2f2f2;
-        --tab-bg: #f1f1f2;
-        --input-bg: #f8f8f8;
-        --success-green: #00c36b;
-      }
-
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      body {
-        font-family:
-          "TikTokSans",
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          Roboto,
-          Helvetica,
-          Arial,
-          sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-primary);
-        display: flex;
-        justify-content: center;
-        line-height: 1.4;
-      }
-
-      /* Scroll Prevention */
-      body.no-scroll {
-        overflow: hidden;
-      }
-
-      .app-container {
-        width: 100%;
-        max-width: 480px;
-        padding: 12px 16px;
-        position: relative;
-        overflow-x: hidden;
-        min-height: 100vh;
-        background-color: var(--bg-color);
-      }
-      .app-container.no-scroll {
-        overflow: hidden;
-        height: 100vh;
-      }
-
-      /* --- Top Header --- */
-      .top-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding: 4px 0;
-      }
-
-      .icon-nav {
-        width: 24px;
-        height: 24px;
-        cursor: pointer;
-      }
-
-      .nav-title {
-        font-size: 17px;
-        font-weight: 600;
-      }
-
-      /* --- Promo Card --- */
-      .promo-card {
-        padding: 16px !important;
-        margin-bottom: 12px;
-      }
-
-      .promo-text-content {
-        font-size: 13px;
-        color: var(--text-secondary);
-        line-height: 1.4;
-        margin-bottom: 8px;
-      }
-
-      .promo-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .learn-more-link {
-        font-size: 13px;
-        color: #d14157;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .expand-icon-box {
-        background-color: var(--btn-secondary-bg);
-        border-radius: 4px;
-        width: 20px;
-        height: 16px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
-
-      .icon-tiny-down {
-        width: 10px;
-        height: 10px;
-        color: var(--text-secondary);
-      }
-
-      /* --- Tabs Section --- */
-      .tabs-container {
-        background-color: var(--tab-bg);
-        border-radius: 8px;
-        display: flex;
-        padding: 4px;
-        margin-bottom: 16px;
-      }
-
-      .tab {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 4px 0;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-
-      .tab.active {
-        background-color: var(--card-bg);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      }
-
-      .tab-title {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-
-      .tab.inactive .tab-title {
-        color: var(--text-secondary);
-        font-weight: 500;
-        position: relative;
-        display: inline-block;
-      }
-
-      .tab-subtitle {
-        font-size: 11px;
-        color: var(--text-secondary);
-        margin-top: 2px;
-      }
-
-      .notification-dot {
-        width: 5px;
-        height: 5px;
-        background-color: var(--primary-red);
-        border-radius: 50%;
-        position: absolute;
-        top: 12px;
-        right: -10px;
-      }
-
-      /* --- Global Card Style --- */
-      .card {
-        background-color: var(--card-bg);
-        border-radius: 12px;
-        padding: 24px 20px;
-        margin-bottom: 12px;
-      }
-
-      /* --- Balance Card --- */
-      .balance-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0;
-      }
-
-      .accumulated-top-bar {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--divider-color);
-        gap: 4px;
-      }
-
-      .accumulated-text {
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-
-      .accumulated-number {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text-secondary);
-      }
-
-      .icon-info {
-        width: 12px;
-        height: 12px;
-        color: var(--text-tertiary);
-        margin-left: 2px;
-      }
-
-      .balance-card-inner {
-        width: 100%;
-        padding: 24px 20px 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow: hidden;
-      }
-
-      .balance-label {
-        font-size: 15px;
-        font-weight: 500;
-        margin-bottom: 8px;
-      }
-
-      .balance-amount {
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        margin-bottom: 30px;
-        width: 100%;
-      }
-
-      .currency {
-        font-size: 18px;
-        font-weight: 700;
-        margin-right: 4px;
-      }
-
-      .amount {
-        font-size: 44px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        white-space: nowrap;
-      }
-
-      .btn {
-        width: 100%;
-        padding: 14px;
-        border-radius: 8px;
-        border: none;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-bottom: 12px;
-      }
-
-      .btn-primary {
-        background-color: var(--primary-red);
-        color: white;
-      }
-
-      .btn-secondary {
-        background-color: var(--btn-secondary-bg);
-        color: var(--text-primary);
-        margin-bottom: 24px;
-      }
-
-      .limit-row {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        margin-bottom: 8px;
-      }
-
-      .limit-row span:first-child {
-        color: var(--text-primary);
-      }
-
-      .increase-limit {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        font-size: 13px;
-        color: var(--primary-red);
-        font-weight: 500;
-        cursor: pointer;
-      }
-
-      .icon-chevron-right {
-        width: 12px;
-        height: 12px;
-        fill: var(--primary-red);
-        margin-left: 4px;
-        margin-top: 1px;
-      }
-
-      /* --- Transactions Card --- */
-      .transactions-card {
-        padding: 24px 20px 8px 20px;
-      }
-
-      .transactions-header {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 20px;
-      }
-
-      .filter-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--divider-color);
-      }
-
-      .month-selector {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        color: var(--text-secondary);
-        font-weight: 500;
-        cursor: pointer;
-      }
-
-      .icon-chevron-down {
-        width: 12px;
-        height: 12px;
-        fill: var(--text-tertiary);
-        margin-left: 6px;
-      }
-
-      .summary-text {
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-
-      .transaction-list {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .transaction-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 18px 0;
-        border-bottom: 1px solid var(--divider-color);
-      }
-
-      .transaction-item:last-child {
-        border-bottom: none;
-      }
-
-      .transaction-details {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        padding-right: 16px;
-      }
-
-      .transaction-title {
-        font-size: 15px;
-        color: var(--text-primary);
-      }
-
-      .transaction-date {
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-
-      .transaction-amount {
-        font-size: 15px;
-        font-weight: 600;
-        white-space: nowrap;
-      }
-
-      .amount-positive {
-        color: var(--text-primary);
-      }
-
-      .amount-negative {
-        color: var(--text-primary);
-      }
-
-      /* =========================================
-         OVERLAYS (Settings, Withdraw, Success)
-         ========================================= */
-      .overlay-page {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--card-bg);
-        z-index: 9999;
-        transform: translateX(100%);
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-      }
-
-      .overlay-page.open {
-        transform: translateX(0);
-      }
-
-      .overlay-header {
-        padding: 16px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background-color: var(--card-bg);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      /* Edit Settings Specific */
-      .settings-content {
-        padding: 0px 16px 24px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        background-color: var(--bg-color);
-        flex: 1;
-      }
-      .form-section-title {
-        font-size: 13px;
-        color: var(--text-secondary);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 4px;
-        margin-top: 16px;
-      }
-      .settings-card {
-        background-color: var(--card-bg);
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-      }
-      .input-group {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 16px;
-      }
-      .input-group:last-child {
-        margin-bottom: 0;
-      }
-      .input-group label {
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-      }
-      .input-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-      }
-      .input-prefix {
-        position: absolute;
-        left: 14px;
-        font-size: 15px;
-        color: var(--text-secondary);
-        font-weight: 500;
-      }
-      .settings-input {
-        width: 100%;
-        padding: 12px 14px;
-        background-color: var(--bg-color);
-        border: 1px solid transparent;
-        border-radius: 8px;
-        font-size: 16px;
-        color: var(--text-primary);
-        font-weight: 500;
-        outline: none;
-        font-family: inherit;
-      }
-      .input-wrapper.has-prefix .settings-input {
-        padding-left: 32px;
-      }
-      .settings-input:focus {
-        border-color: var(--primary-red);
-        background-color: var(--card-bg);
-      }
-      .limit-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      /* =========================================
-         WITHDRAW OVERLAY STYLES
-         ========================================= */
-      .withdraw-content {
-        padding: 16px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      }
-      .withdraw-header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16px;
-      }
-      .withdraw-title {
-        font-size: 15px;
-        font-weight: 600;
-      }
-      .manage-btn {
-        color: var(--primary-red);
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-      }
-
-      /* TikTok Profile Lookup Box */
-      .tiktok-lookup-box {
-        background-color: #fff;
-        border: 1px solid var(--divider-color);
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 24px;
-        transition: height 0.3s ease;
-        overflow: hidden;
-      }
-      .tiktok-lookup-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-        gap: 8px;
-      }
-      .tiktok-logo-circle {
-        width: 28px;
-        height: 28px;
-        background-color: #000;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .tiktok-logo-circle svg {
-        width: 16px;
-        height: 16px;
-        fill: #fff;
-      }
-      .transfer-name-text {
-        font-size: 15px;
-        font-weight: 600;
-      }
-      .transfer-subtext {
-        font-size: 14px;
-        color: var(--text-secondary);
-        font-weight: 400;
-      }
-      .lookup-input-field {
-        width: 100%;
-        padding: 12px;
-        background-color: var(--input-bg);
-        border: 1px solid transparent;
-        border-radius: 6px;
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--text-primary);
-        outline: none;
-        font-family: inherit;
-      }
-      .lookup-input-field:focus {
-        border-color: var(--divider-color);
-      }
-
-      /* Profile Preview Details */
-      .profile-preview {
-        display: flex;
-        align-items: center;
-        margin-top: 16px;
-        gap: 12px;
-      }
-      .profile-preview.hidden {
-        display: none;
-      }
-      .profile-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-      .profile-info {
-        display: flex;
-        flex-direction: column;
-      }
-      .lookup_nicknameLine {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-weight: 600;
-        font-size: 15px;
-      }
-      .lookup_handle {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-top: 2px;
-      }
-      .lookup_followers {
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-top: 2px;
-        font-weight: 500;
-      }
-
-      /* Skeleton Loader */
-      .skeleton-loader {
-        display: flex;
-        align-items: center;
-        margin-top: 16px;
-        gap: 12px;
-        animation: pulse 1.5s infinite ease-in-out;
-      }
-      .skeleton-loader.hidden {
-        display: none;
-      }
-      .skeleton-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background-color: #e0e0e0;
-      }
-      .skeleton-lines {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        flex: 1;
-      }
-      .skeleton-line {
-        height: 12px;
-        background-color: #e0e0e0;
-        border-radius: 4px;
-      }
-      .skeleton-line.short {
-        width: 60%;
-      }
-      @keyframes pulse {
-        0% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.5;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
-
-      /* Amount Section */
-      .amount-box-container {
-        border-radius: 12px;
-        border: 1px solid var(--divider-color);
-        overflow: hidden;
-        margin-bottom: 24px;
-      }
-      .daily-limit-bar {
-        background-color: var(--input-bg);
-        padding: 12px 16px;
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-      .withdraw-inner-box {
-        padding: 16px;
-        background-color: #fff;
-      }
-      .withdraw-inner-label {
-        font-size: 14px;
-        color: var(--text-primary);
-        font-weight: 500;
-        margin-bottom: 8px;
-      }
-      .withdraw-input-row {
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid var(--divider-color);
-        padding-bottom: 8px;
-        margin-bottom: 16px;
-      }
-      .withdraw-currency {
-        font-size: 20px;
-        font-weight: 700;
-        margin-right: 8px;
-      }
-      .withdraw-amount-input {
-        flex: 1;
-        font-size: 28px;
-        font-weight: 700;
-        border: none;
-        outline: none;
-        color: var(--text-primary);
-        width: 100%;
-        font-family: inherit;
-        padding: 0;
-      }
-      .withdraw-amount-input::placeholder {
-        color: #d0d0d0;
-      }
-      .btn-all {
-        color: var(--primary-red);
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        padding-left: 12px;
-      }
-
-      .receive-display {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--text-primary);
-      }
-
-      .service-fee-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 32px;
-        padding: 0 4px;
-      }
-
-      .withdraw-footer {
-        margin-top: auto;
-        padding-top: 24px;
-      }
-      .terms-text {
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-bottom: 16px;
-        line-height: 1.5;
-        text-align: center;
-      }
-      .terms-text strong {
-        color: var(--text-primary);
-        font-weight: 600;
-      }
-
-      .btn-withdraw-submit {
-        background-color: var(--primary-red);
-        color: white;
-        width: 100%;
-        padding: 14px;
-        border-radius: 8px;
-        border: none;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        opacity: 0.5;
-        pointer-events: none;
-        transition: opacity 0.2s;
-      }
-      .btn-withdraw-submit.active {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      /* =========================================
-         FULL PAGE LOADER SVG OVERLAY
-         ========================================= */
-      .loader-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.95);
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-      }
-      .loader-overlay.show {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      /* =========================================
-         NEW SUCCESS OVERLAY STYLES
-         ========================================= */
-      .success-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--bg-color);
-        z-index: 10001;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0;
-        transform: translateY(100%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        overflow-y: auto;
-      }
-      .success-overlay.show {
-        transform: translateY(0);
-      }
-      .success-header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 16px;
-        background-color: var(--bg-color);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-      }
-      .success-header-title {
-        flex: 1;
-        text-align: center;
-        font-size: 17px;
-        font-weight: 700;
-        margin-right: 24px;
-      }
-      .success-card {
-        background-color: var(--card-bg);
-        border-radius: 12px;
-        margin: 16px;
-        padding: 24px 20px;
-        width: calc(100% - 32px);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
-      }
-      .success-amount-section {
-        text-align: center;
-        margin-bottom: 24px;
-        border-bottom: 1px solid var(--divider-color);
-        padding-bottom: 24px;
-      }
-      .success-amount-title {
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 12px;
-      }
-      .success-amount-value {
-        font-size: 42px;
-        font-weight: 800;
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        gap: 6px;
-        color: #000;
-      }
-      .success-amount-currency {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-secondary);
-      }
-      .success-details-list {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-      }
-      .success-detail-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-      }
-      .success-detail-label {
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-      .success-detail-value {
-        font-weight: 700;
-        color: var(--text-primary);
-        text-align: right;
-      }
-      .success-status-green {
-        color: var(--success-green);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .btn-success-done {
-        width: calc(100% - 32px);
-        margin: 16px;
-        padding: 15px;
-        border-radius: 8px;
-        border: none;
-        background-color: var(--primary-red);
-        color: #fff;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      .success-help-link {
-        text-align: center;
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-top: 8px;
-        margin-bottom: 32px;
-        cursor: pointer;
-      }
-    </style>
   </head>
   <body>
     <div class="app-container" id="appContainer">
@@ -979,30 +35,6 @@
             d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
           />
         </svg>
-      </div>
-
-      <!-- Promo Banner -->
-      <div class="card promo-card">
-        <div class="promo-text-content">
-          TikTok LIVE now rewards creators in a new way! Complete missions to
-          get a rewards percentage of up to 53% and unlock limited-...
-        </div>
-        <div class="promo-footer">
-          <span class="learn-more-link">Learn more</span>
-          <div class="expand-icon-box">
-            <svg
-              class="icon-tiny-down"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </div>
       </div>
 
       <!-- Top Tabs -->
@@ -1055,12 +87,11 @@
 
         <div class="balance-card-inner">
           <div class="balance-label">Available rewards</div>
-          <div class="balance-amount">
+          <div class="balance-amount-wrapper">
             <span class="currency">USD</span>
             <span class="amount" id="valAvailMain">0.00</span>
           </div>
 
-          <!-- Transfer Button Trigger -->
           <button class="btn btn-primary" id="openWithdrawBtn">Transfer</button>
           <button class="btn btn-secondary">Exchange</button>
 
@@ -1083,12 +114,12 @@
         </div>
       </div>
 
-      <!-- Transactions Card (Dynamic) -->
+      <!-- Transactions Card -->
       <div class="card transactions-card">
         <div class="transactions-header">Transactions</div>
         <div class="filter-row">
           <div class="month-selector">
-            Sep 2025
+            <span id="currentMonthDisplay">Sep 2025</span>
             <svg
               class="icon-chevron-down"
               viewBox="0 0 24 24"
@@ -1098,6 +129,7 @@
                 d="M7.41 8.59L12 13.17L16.59 8.59L18 10L12 16L6 10L7.41 8.59Z"
               />
             </svg>
+            <input type="month" id="monthInput" class="month-native-input" />
           </div>
           <div class="summary-text" id="transactionsSummary">
             In: USD97,000,000.00 &nbsp;Out: USD0.00
@@ -1108,9 +140,7 @@
         </div>
       </div>
 
-      <!-- =========================================
-           ADVANCED SETTINGS OVERLAY 
-           ========================================= -->
+      <!-- Advanced Settings Overlay -->
       <div class="overlay-page" id="settingsMenu">
         <div
           class="overlay-header"
@@ -1199,15 +229,13 @@
         </div>
       </div>
 
-      <!-- =========================================
-           TRANSFER OVERLAY
-           ========================================= -->
+      <!-- Transfer Overlay -->
       <div
         class="overlay-page"
         id="withdrawMenu"
-        style="background-color: #fff"
+        style="background-color: #f1f1f2"
       >
-        <div class="overlay-header">
+        <div class="overlay-header" style="background-color: #f1f1f2">
           <svg
             class="icon-nav"
             id="closeWithdrawBtn"
@@ -1229,13 +257,8 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <!-- Outer circle -->
             <circle cx="12" cy="12" r="10"></circle>
-
-            <!-- Symmetrical, perfectly rounded question mark hook -->
             <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2.2-2.5 2.5-2.5 4.5"></path>
-
-            <!-- Solid circle for the dot (guarantees perfect rendering everywhere) -->
             <circle
               cx="12"
               cy="17.2"
@@ -1252,7 +275,7 @@
             <div class="manage-btn">Manage</div>
           </div>
 
-          <!-- TikTok User Search Section -->
+          <!-- TikTok Lookup Box -->
           <div class="tiktok-lookup-box" id="recharge_container_div">
             <div class="tiktok-lookup-header">
               <div class="tiktok-logo-circle">
@@ -1289,16 +312,15 @@
               autocomplete="off"
             />
 
-            <!-- Skeleton Container -->
-            <div class="skeleton-loader hidden" id="lookup_skeletonContainer">
-              <div class="skeleton-avatar"></div>
-              <div class="skeleton-lines">
-                <div class="skeleton-line short"></div>
-                <div class="skeleton-line"></div>
-              </div>
+            <!-- Spinner Loader -->
+            <div
+              class="search-loader-container hidden"
+              id="lookup_spinnerContainer"
+            >
+              <div class="spinner"></div>
             </div>
 
-            <!-- Profile Result Container -->
+            <!-- Profile Result -->
             <div class="profile-preview hidden" id="lookup_profilePreview">
               <div
                 id="lookup_contentWrapper"
@@ -1345,7 +367,6 @@
                 />
                 <span class="btn-all" id="btnWithdrawAll">All</span>
               </div>
-
               <div class="withdraw-inner-label" style="margin-top: 16px">
                 Estimated amount you receive
               </div>
@@ -1379,23 +400,83 @@
             <span id="withdrawFeeDisplay">0.00 USD</span>
           </div>
 
-          <!-- Footer Area -->
           <div class="withdraw-footer">
             <div class="terms-text">
               TikTok <strong>Terms of Service</strong> and
               <strong>Privacy Policy</strong>. Payment transactions are
               processed by PIPO. <strong>PIPO Privacy Policy</strong>
             </div>
-            <button class="btn-withdraw-submit" id="executeWithdrawBtn">
+            <button class="btn-withdraw-submit" id="triggerConfirmBtn">
               Transfer
             </button>
           </div>
         </div>
       </div>
 
-      <!-- =========================================
-           LOADER SVG OVERLAY
-           ========================================= -->
+      <!-- CONFIRM MODAL (BOTTOM SHEET) -->
+      <div class="confirm-modal-overlay" id="confirmModal">
+        <div class="confirm-modal-sheet">
+          <div class="confirm-header">
+            <h3>Transfer details</h3>
+            <svg class="close-confirm" id="closeConfirmBtn" viewBox="0 0 24 24">
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+              />
+            </svg>
+          </div>
+          <div class="confirm-details-list">
+            <div class="confirm-row">
+              <span class="c-label">Transfer to</span>
+              <span class="c-value" id="confTarget">TikTok (@username)</span>
+            </div>
+            <div class="confirm-row">
+              <span class="c-label">Transfer amount</span>
+              <span class="c-value"><span id="confAmount">0.00</span> USD</span>
+            </div>
+            <div class="confirm-row">
+              <span class="c-label"
+                >Service fee
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line></svg
+              ></span>
+              <span class="c-value"><span id="confFee">0.00</span> USD</span>
+            </div>
+            <div class="confirm-row">
+              <span class="c-label"
+                >Estimated amount you receive
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line></svg
+              ></span>
+              <span class="c-value"
+                ><span id="confReceive">0.00</span> USD</span
+              >
+            </div>
+          </div>
+          <button class="btn btn-primary" id="executeWithdrawBtn">
+            Confirm
+          </button>
+        </div>
+      </div>
+
+      <!-- LOADER SVG OVERLAY -->
       <div id="loaderOverlay" class="loader-overlay">
         <div
           style="
@@ -1475,15 +556,12 @@
         </div>
       </div>
 
-      <!-- =========================================
-           NEW SUCCESS OVERLAY
-           ========================================= -->
+      <!-- SUCCESS OVERLAY -->
       <div id="successOverlay" class="success-overlay">
         <div class="success-header">
           <svg
             class="icon-nav"
             id="backFromSuccessBtn"
-            viewBox="0 0 24 24"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -1491,7 +569,6 @@
               d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
             />
           </svg>
-
           <div class="success-header-title">Transfer details</div>
         </div>
 
@@ -1594,477 +671,18 @@
         <button class="btn-success-done" id="closeSuccessBtn">
           Back to Rewards
         </button>
-        <div class="success-help-link">Need help? &rsaquo;</div>
+        <div class="success-help-link">
+          Need help?
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path
+              d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"
+            />
+          </svg>
+        </div>
       </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT LOGIC -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- DATA & STATE MANAGEMENT ---
-        const defaults = {
-          avail: 9700000.0,
-          upcom: 2000000.0,
-          diamonds: "30,464",
-          limitRem: "9.7M",
-          limitTot: "10.0M",
-        };
-
-        const defaultTransactions = [
-          {
-            title: "LIVE rewards",
-            date: "9/21/2025 19:50:53",
-            amount: "+USD1,000",
-            type: "positive",
-            val: 0.01,
-          },
-        ];
-
-        let currentAvailBal = 0;
-        let isProfileValid = false;
-        let activeTargetUsername = "";
-
-        // Elements: Scroll Control
-        const bodyEl = document.body;
-        const appContainer = document.getElementById("appContainer");
-        const toggleScroll = (disable) => {
-          if (disable) {
-            bodyEl.classList.add("no-scroll");
-            appContainer.classList.add("no-scroll");
-          } else {
-            bodyEl.classList.remove("no-scroll");
-            appContainer.classList.remove("no-scroll");
-          }
-        };
-
-        // Elements: Dashboard
-        const valAvailMain = document.getElementById("valAvailMain");
-        const valAvailTab = document.getElementById("valAvailTab");
-        const valUpcomTab = document.getElementById("valUpcomTab");
-        const valDiamonds = document.getElementById("valDiamonds");
-        const valLimits = document.getElementById("valLimits");
-
-        // Elements: Settings Overlay
-        const settingsMenu = document.getElementById("settingsMenu");
-        const editAvail = document.getElementById("editAvail");
-        const editUpcom = document.getElementById("editUpcom");
-        const editDiamonds = document.getElementById("editDiamonds");
-        const editLimitRem = document.getElementById("editLimitRem");
-        const editLimitTot = document.getElementById("editLimitTot");
-
-        // Elements: Withdraw Overlay
-        const withdrawMenu = document.getElementById("withdrawMenu");
-        const withdrawAmountInput = document.getElementById(
-          "withdrawAmountInput",
-        );
-        const withdrawReceiveDisplay = document.getElementById(
-          "withdrawReceiveDisplay",
-        );
-        const withdrawFeeDisplay =
-          document.getElementById("withdrawFeeDisplay");
-        const withdrawScreenLimits = document.getElementById(
-          "withdrawScreenLimits",
-        );
-        const executeWithdrawBtn =
-          document.getElementById("executeWithdrawBtn");
-        const btnWithdrawAll = document.getElementById("btnWithdrawAll");
-
-        // Elements: Loader & Success
-        const loaderOverlay = document.getElementById("loaderOverlay");
-        const successOverlay = document.getElementById("successOverlay");
-        const succAmt = document.getElementById("succAmt");
-        const succMethod = document.getElementById("succMethod");
-        const succFee = document.getElementById("succFee");
-        const succReceive = document.getElementById("succReceive");
-        const succTime = document.getElementById("succTime");
-        const succTxId = document.getElementById("succTxId");
-
-        // Helper: Format number with commas
-        const formatNumber = (num) => {
-          let parts = parseFloat(num).toFixed(2).split(".");
-          parts[0] = parseInt(parts[0], 10).toLocaleString("en-US");
-          return parts.join(".");
-        };
-
-        // Helper: Current Date format M/D/YYYY HH:MM:SS (Used for history logs)
-        const getFormattedDate = () => {
-          const d = new Date();
-          return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} ${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}:${d.getSeconds().toString().padStart(2, "0")}`;
-        };
-
-        // Helper: Format date for Success Screen like "03/15/2026, 08:48:15 PM"
-        const getAMPMDate = () => {
-          const d = new Date();
-          let hours = d.getHours();
-          let minutes = d.getMinutes();
-          let seconds = d.getSeconds();
-          const ampm = hours >= 12 ? "PM" : "AM";
-          hours = hours % 12;
-          hours = hours ? hours : 12;
-          minutes = minutes < 10 ? "0" + minutes : minutes;
-          seconds = seconds < 10 ? "0" + seconds : seconds;
-          return `${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getDate().toString().padStart(2, "0")}/${d.getFullYear()}, ${hours.toString().padStart(2, "0")}:${minutes}:${seconds} ${ampm}`;
-        };
-
-        // Advanced Transactions rendering logic
-        const renderTransactions = () => {
-          let txList = JSON.parse(localStorage.getItem("mockTransactions"));
-          if (!txList || txList.length === 0) {
-            txList = defaultTransactions;
-            localStorage.setItem("mockTransactions", JSON.stringify(txList));
-          }
-
-          const container = document.getElementById("transactionListContainer");
-          const summary = document.getElementById("transactionsSummary");
-          container.innerHTML = "";
-
-          let totalOut = 0;
-
-          txList.forEach((tx) => {
-            if (tx.type === "negative") {
-              totalOut += tx.val;
-            }
-
-            const div = document.createElement("div");
-            div.className = "transaction-item";
-            div.innerHTML = `
-              <div class="transaction-details">
-                <div class="transaction-title">${tx.title}</div>
-                <div class="transaction-date">${tx.date}</div>
-              </div>
-              <div class="transaction-amount ${tx.type === "positive" ? "amount-positive" : "amount-negative"}">${tx.amount}</div>
-            `;
-            container.appendChild(div);
-          });
-
-          // Update Summary text dynamically
-          summary.innerHTML = `In: USD97,000,000.00 &nbsp;Out: USD${formatNumber(totalOut)}`;
-        };
-
-        // Load data from LocalStorage
-        const loadSettings = () => {
-          let avail = localStorage.getItem("mockAvail");
-          if (avail === null) avail = defaults.avail;
-          currentAvailBal = parseFloat(avail) || 0;
-
-          let upcom = parseFloat(
-            localStorage.getItem("mockUpcom") || defaults.upcom,
-          );
-          let diamonds =
-            localStorage.getItem("mockDiamonds") || defaults.diamonds;
-          let limitRem =
-            localStorage.getItem("mockLimitRem") || defaults.limitRem;
-          let limitTot =
-            localStorage.getItem("mockLimitTot") || defaults.limitTot;
-
-          // Update Dashboard UI
-          valAvailMain.innerText = formatNumber(currentAvailBal);
-          valAvailTab.innerText = `USD${formatNumber(currentAvailBal)}`;
-          valUpcomTab.innerText = `USD${formatNumber(upcom)}`;
-          valDiamonds.innerText = diamonds;
-          valLimits.innerText = `$${limitRem}/$${limitTot}`;
-
-          // Update Settings Inputs
-          editAvail.value = currentAvailBal;
-          editUpcom.value = upcom;
-          editDiamonds.value = diamonds;
-          editLimitRem.value = limitRem;
-          editLimitTot.value = limitTot;
-
-          // Update Withdraw Screen Limits
-          withdrawScreenLimits.innerText = `$${limitRem} / $${limitTot}`;
-
-          // Update Transactions List
-          renderTransactions();
-        };
-
-        loadSettings();
-
-        // --- EVENT LISTENERS: SETTINGS ---
-        document
-          .getElementById("openSettingsTrigger")
-          .addEventListener("click", () => {
-            toggleScroll(true);
-            settingsMenu.classList.add("open");
-          });
-        document
-          .getElementById("closeSettingsBtn")
-          .addEventListener("click", () => {
-            toggleScroll(false);
-            settingsMenu.classList.remove("open");
-          });
-        document
-          .getElementById("saveSettingsBtn")
-          .addEventListener("click", () => {
-            localStorage.setItem(
-              "mockAvail",
-              editAvail.value.replace(/,/g, ""),
-            );
-            localStorage.setItem(
-              "mockUpcom",
-              editUpcom.value.replace(/,/g, ""),
-            );
-            localStorage.setItem("mockDiamonds", editDiamonds.value);
-            localStorage.setItem("mockLimitRem", editLimitRem.value);
-            localStorage.setItem("mockLimitTot", editLimitTot.value);
-            loadSettings();
-            toggleScroll(false);
-            settingsMenu.classList.remove("open");
-          });
-
-        // --- EVENT LISTENERS: WITHDRAW OVERLAY ---
-        document
-          .getElementById("openWithdrawBtn")
-          .addEventListener("click", () => {
-            toggleScroll(true);
-            withdrawAmountInput.value = "";
-            updateWithdrawMath(); // reset calculation
-            withdrawMenu.classList.add("open");
-          });
-        document
-          .getElementById("closeWithdrawBtn")
-          .addEventListener("click", () => {
-            toggleScroll(false);
-            withdrawMenu.classList.remove("open");
-          });
-
-        // Withdraw Math Logic (2% Fee)
-        let currentFee = 0;
-        let currentReceive = 0;
-
-        const updateWithdrawMath = () => {
-          let val = parseFloat(withdrawAmountInput.value);
-          if (isNaN(val) || val <= 0) {
-            withdrawReceiveDisplay.innerText = "0.00";
-            withdrawFeeDisplay.innerText = "0.00 USD";
-            executeWithdrawBtn.classList.remove("active");
-            return;
-          }
-
-          // Calculate fee dynamically (~2%)
-          currentFee = val * 0.02;
-          currentReceive = val - currentFee;
-
-          withdrawReceiveDisplay.innerText = currentReceive.toFixed(2);
-          withdrawFeeDisplay.innerText = `${currentFee.toFixed(2)} USD`;
-
-          // Validation to enable submit button
-          if (val > 0 && val <= currentAvailBal && isProfileValid) {
-            executeWithdrawBtn.classList.add("active");
-          } else {
-            executeWithdrawBtn.classList.remove("active");
-          }
-        };
-
-        withdrawAmountInput.addEventListener("input", updateWithdrawMath);
-
-        btnWithdrawAll.addEventListener("click", () => {
-          withdrawAmountInput.value = currentAvailBal.toFixed(2);
-          updateWithdrawMath();
-        });
-
-        // Execute Withdraw Action
-        executeWithdrawBtn.addEventListener("click", () => {
-          let amount = parseFloat(withdrawAmountInput.value);
-          if (!executeWithdrawBtn.classList.contains("active") || isNaN(amount))
-            return;
-
-          // 1. Show loader
-          loaderOverlay.classList.add("show");
-
-          // 2. Simulate network delay (2.5 seconds)
-          setTimeout(() => {
-            // Deduct balance
-            currentAvailBal -= amount;
-            localStorage.setItem("mockAvail", currentAvailBal);
-
-            // Add new transaction
-            let txList =
-              JSON.parse(localStorage.getItem("mockTransactions")) ||
-              defaultTransactions;
-            txList.unshift({
-              title: `Transfer to @${activeTargetUsername}`,
-              date: getFormattedDate(),
-              amount: `-USD${amount.toFixed(2)}`,
-              type: "negative",
-              val: amount,
-            });
-            localStorage.setItem("mockTransactions", JSON.stringify(txList));
-
-            // Reload UI
-            loadSettings();
-
-            // Populate Exact Success Screen Info
-            succAmt.innerText = amount.toFixed(2);
-            succMethod.innerText = `TikTok(@${activeTargetUsername})`;
-            succFee.innerText = `${currentFee.toFixed(2)} USD`;
-            succReceive.innerText = `${currentReceive.toFixed(2)} USD`;
-            succTime.innerText = getAMPMDate();
-
-            // Random 13 digit transaction ID
-            const randomTxId = Math.floor(
-              1000000000000 + Math.random() * 9000000000000,
-            ).toString();
-            succTxId.innerText = randomTxId;
-
-            // Hide loader, show success screen
-            loaderOverlay.classList.remove("show");
-            withdrawMenu.classList.remove("open"); // Close underlying menu
-            successOverlay.classList.add("show");
-          }, 2500);
-        });
-
-        const closeSuccessView = () => {
-          successOverlay.classList.remove("show");
-          toggleScroll(false);
-          withdrawAmountInput.value = "";
-          document.getElementById("lookup_input").value = "";
-          hideProfilePreview(); // reset search UI
-        };
-
-        document
-          .getElementById("closeSuccessBtn")
-          .addEventListener("click", closeSuccessView);
-        document
-          .getElementById("backFromSuccessBtn")
-          .addEventListener("click", closeSuccessView);
-
-        // --- TIKTOK USER SEARCH INTEGRATION ---
-        const containerDiv = document.getElementById("recharge_container_div");
-        const inputElement = document.getElementById("lookup_input");
-        const profilePreview = document.getElementById("lookup_profilePreview");
-        const contentWrapper = document.getElementById("lookup_contentWrapper");
-        const avatar = document.getElementById("lookup_avatar");
-        const nicknameLine = document.querySelector(".lookup_nicknameLine");
-        const nickname = document.getElementById("lookup_nickname");
-        const handle = document.getElementById("lookup_handle");
-        const followers = document.getElementById("lookup_followers");
-        const skeletonContainer = document.getElementById(
-          "lookup_skeletonContainer",
-        );
-        const PLACEHOLDER_AVATAR_SVG =
-          "https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=2ea1e4d5&x-expires=1761764400&x-signature=FKCi20gW%2FvqVpBdwRMY7VYfB1ro%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my";
-
-        let debounceTimeout = null;
-        let fetchController = null;
-
-        function abbreviateNumber(value) {
-          const num = Number(value);
-          if (isNaN(num)) return value;
-          const tiers = [
-            { value: 1e6, symbol: "M" },
-            { value: 1e3, symbol: "K" },
-          ];
-          const tier = tiers.find((t) => num >= t.value);
-          if (tier) {
-            const scaled = num / tier.value;
-            return scaled.toFixed(1).replace(/\.0$/, "") + tier.symbol;
-          }
-          return num.toString();
-        }
-
-        function updateContainerHeight(isActive) {
-          containerDiv.style.height = isActive ? "200px" : "auto";
-        }
-
-        async function fetchTikTokProfile(username, signal) {
-          if (!username || username.length < 1) return null;
-          const apiUrl = `https://tiktok-scraper-api-8824.onrender.com/scrape?username=${encodeURIComponent(username)}`;
-          try {
-            const response = await fetch(apiUrl, { signal });
-            if (!response.ok) return null;
-            const result = await response.json();
-            if (
-              !result.data ||
-              !result.data.unique_id ||
-              result.data.unique_id === "No unique_id found"
-            ) {
-              return null;
-            }
-            return {
-              uniqueId: result.data.unique_id,
-              nickname: result.data.nickname,
-              avatar: result.data.profile_pic,
-              followers: result.data.followers,
-              verified: result.data.verified,
-            };
-          } catch (error) {
-            return null;
-          }
-        }
-
-        function showSkeleton() {
-          isProfileValid = false;
-          updateWithdrawMath();
-          updateContainerHeight(true);
-          profilePreview.classList.remove("hidden");
-          contentWrapper.style.display = "none";
-          skeletonContainer.classList.remove("hidden");
-        }
-
-        function showProfile(data) {
-          isProfileValid = true;
-          activeTargetUsername = data.uniqueId;
-          updateWithdrawMath();
-
-          nickname.textContent = data.nickname;
-          handle.textContent = `@${data.uniqueId}`;
-          avatar.src = data.avatar;
-          followers.textContent = `${abbreviateNumber(data.followers)} Followers`;
-
-          const oldBadge = nicknameLine.querySelector("svg");
-          if (oldBadge) oldBadge.remove();
-
-          if (data.verified) {
-            const verifiedBadgeSVG = `<svg width="14" height="14" viewBox="0 0 48 48" fill="none" style="margin-left:4px" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="24" fill="#20D5EC"></circle><path fill-rule="evenodd" clip-rule="evenodd" d="M37.1213 15.8787C38.2929 17.0503 38.2929 18.9497 37.1213 20.1213L23.6213 33.6213C22.4497 34.7929 20.5503 34.7929 19.3787 33.6213L10.8787 25.1213C9.70711 23.9497 9.70711 22.0503 10.8787 20.8787C12.0503 19.7071 13.9497 19.7071 15.1213 20.8787L21.5 27.2574L32.8787 15.8787C34.0503 14.7071 35.9497 14.7071 37.1213 15.8787Z" fill="white"></path></svg>`;
-            nicknameLine.insertAdjacentHTML("beforeend", verifiedBadgeSVG);
-          }
-          skeletonContainer.classList.add("hidden");
-          contentWrapper.style.display = "flex";
-        }
-
-        function showErrorState(username) {
-          isProfileValid = false;
-          updateWithdrawMath();
-          avatar.src = PLACEHOLDER_AVATAR_SVG;
-          nickname.textContent = "Profile not found";
-          const oldBadge = nicknameLine.querySelector("svg");
-          if (oldBadge) oldBadge.remove();
-          handle.textContent = `No results for "@${username}"`;
-          followers.textContent = "";
-          skeletonContainer.classList.add("hidden");
-          contentWrapper.style.display = "flex";
-        }
-
-        function hideProfilePreview() {
-          isProfileValid = false;
-          updateWithdrawMath();
-          updateContainerHeight(false);
-          profilePreview.classList.add("hidden");
-        }
-
-        inputElement.addEventListener("input", () => {
-          const username = inputElement.value.trim().replace(/^@+/, "");
-          clearTimeout(debounceTimeout);
-          if (fetchController) fetchController.abort();
-          if (!username) {
-            hideProfilePreview();
-            return;
-          }
-
-          showSkeleton();
-          fetchController = new AbortController();
-          const signal = fetchController.signal;
-
-          debounceTimeout = setTimeout(async () => {
-            const profileData = await fetchTikTokProfile(username, signal);
-            if (!signal.aborted) {
-              if (profileData) showProfile(profileData);
-              else showErrorState(username);
-            }
-          }, 350);
-        });
-      });
-    </script>
+    <!-- JS Logic -->
+    <script src="script.js"></script>
   </body>
 </html>
