@@ -53,7 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Elements: Withdraw Overlay
   const withdrawMenu = document.getElementById("withdrawMenu");
   const withdrawAmountInput = document.getElementById("withdrawAmountInput");
-  const withdrawReceiveDisplay = document.getElementById("withdrawReceiveDisplay");
+  const withdrawReceiveDisplay = document.getElementById(
+    "withdrawReceiveDisplay",
+  );
   const withdrawFeeDisplay = document.getElementById("withdrawFeeDisplay");
   const withdrawScreenLimits = document.getElementById("withdrawScreenLimits");
   const triggerConfirmBtn = document.getElementById("triggerConfirmBtn");
@@ -87,12 +89,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Auto-resize Amount Font dynamically so it doesn't break limits
   const adjustAmountFontSize = () => {
-    let fontSize = 44; 
+    let fontSize = 42;
     valAvailMain.style.fontSize = `${fontSize}px`;
-    
+
     // Safety fallback scaling
     const containerWidth = valAvailMain.parentElement.clientWidth;
-    while (valAvailMain.scrollWidth > containerWidth && fontSize > 16) {
+    while (valAvailMain.scrollWidth > containerWidth && fontSize > 30) {
       fontSize -= 1;
       valAvailMain.style.fontSize = `${fontSize}px`;
     }
@@ -120,20 +122,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const initMonthSelector = () => {
     const displaySpan = document.getElementById("currentMonthDisplay");
     const input = document.getElementById("monthInput");
-    
+
     // Set initial text to current month (e.g. Sep 2025)
     const now = new Date();
-    const formatted = now.toLocaleString('default', { month: 'short', year: 'numeric' });
+    const formatted = now.toLocaleString("default", {
+      month: "short",
+      year: "numeric",
+    });
     displaySpan.innerText = formatted;
 
     // Default value for native month picker YYYY-MM
-    input.value = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}`;
+    input.value = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}`;
 
     input.addEventListener("change", (e) => {
-        if(!e.target.value) return;
-        const [yy, mm] = e.target.value.split("-");
-        const dateObj = new Date(yy, mm - 1);
-        displaySpan.innerText = dateObj.toLocaleString('default', { month: 'short', year: 'numeric' });
+      if (!e.target.value) return;
+      const [yy, mm] = e.target.value.split("-");
+      const dateObj = new Date(yy, mm - 1);
+      displaySpan.innerText = dateObj.toLocaleString("default", {
+        month: "short",
+        year: "numeric",
+      });
     });
   };
 
@@ -141,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderTransactions = () => {
     let txList = JSON.parse(localStorage.getItem("mockTransactions"));
     if (!txList || txList.length === 0) txList = defaultTransactions;
-    
+
     const container = document.getElementById("transactionListContainer");
     const summary = document.getElementById("transactionsSummary");
     container.innerHTML = "";
@@ -190,19 +198,21 @@ document.addEventListener("DOMContentLoaded", () => {
     editLimitTot.value = limitTot;
 
     withdrawScreenLimits.innerText = `$${limitRem} / $${limitTot}`;
-    
+
     initMonthSelector();
     renderTransactions();
   };
-  
+
   loadSettings();
-  window.addEventListener('resize', adjustAmountFontSize);
+  window.addEventListener("resize", adjustAmountFontSize);
 
   // --- SETTINGS OVERLAY ---
-  document.getElementById("openSettingsTrigger").addEventListener("click", () => {
-    toggleScroll(true);
-    settingsMenu.classList.add("open");
-  });
+  document
+    .getElementById("openSettingsTrigger")
+    .addEventListener("click", () => {
+      toggleScroll(true);
+      settingsMenu.classList.add("open");
+    });
   document.getElementById("closeSettingsBtn").addEventListener("click", () => {
     toggleScroll(false);
     settingsMenu.classList.remove("open");
@@ -225,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("openWithdrawBtn").addEventListener("click", () => {
     toggleScroll(true);
     withdrawAmountInput.value = "";
-    updateWithdrawMath(); 
+    updateWithdrawMath();
     withdrawMenu.classList.add("open");
   });
   document.getElementById("closeWithdrawBtn").addEventListener("click", () => {
@@ -264,9 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIRM MODAL LOGIC ---
   triggerConfirmBtn.addEventListener("click", () => {
     if (!triggerConfirmBtn.classList.contains("active")) return;
-    
+
     let amount = parseFloat(withdrawAmountInput.value);
-    
+
     // Populate Modal
     confTarget.innerText = `TikTok (@${activeTargetUsername})`;
     confAmount.innerText = amount.toFixed(2);
@@ -285,14 +295,16 @@ document.addEventListener("DOMContentLoaded", () => {
   executeWithdrawBtn.addEventListener("click", () => {
     let amount = parseFloat(withdrawAmountInput.value);
     confirmModal.classList.remove("show"); // Close modal right away
-    loaderOverlay.classList.add("show");   // Show loader
+    loaderOverlay.classList.add("show"); // Show loader
 
     // Simulate Network Request
     setTimeout(() => {
       currentAvailBal -= amount;
       localStorage.setItem("mockAvail", currentAvailBal);
 
-      let txList = JSON.parse(localStorage.getItem("mockTransactions")) || defaultTransactions;
+      let txList =
+        JSON.parse(localStorage.getItem("mockTransactions")) ||
+        defaultTransactions;
       txList.unshift({
         title: `Transfer to @${activeTargetUsername}`,
         date: getFormattedDate(),
@@ -315,7 +327,9 @@ document.addEventListener("DOMContentLoaded", () => {
       succFee.innerText = `${currentFee.toFixed(2)} USD`;
       succReceive.innerText = `${currentReceive.toFixed(2)} USD`;
       succTime.innerText = getAMPMDate();
-      succTxId.innerText = Math.floor(1000000000000 + Math.random() * 9000000000000).toString();
+      succTxId.innerText = Math.floor(
+        1000000000000 + Math.random() * 9000000000000,
+      ).toString();
 
       loaderOverlay.classList.remove("show");
       withdrawMenu.classList.remove("open");
@@ -331,8 +345,12 @@ document.addEventListener("DOMContentLoaded", () => {
     hideProfilePreview();
   };
 
-  document.getElementById("closeSuccessBtn").addEventListener("click", closeSuccessView);
-  document.getElementById("backFromSuccessBtn").addEventListener("click", closeSuccessView);
+  document
+    .getElementById("closeSuccessBtn")
+    .addEventListener("click", closeSuccessView);
+  document
+    .getElementById("backFromSuccessBtn")
+    .addEventListener("click", closeSuccessView);
 
   // --- TIKTOK LOOKUP INTEGRATION ---
   const containerDiv = document.getElementById("recharge_container_div");
@@ -345,8 +363,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const handle = document.getElementById("lookup_handle");
   const followers = document.getElementById("lookup_followers");
   const spinnerContainer = document.getElementById("lookup_spinnerContainer");
-  
-  const PLACEHOLDER_AVATAR_SVG = "https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:1080:1080.jpeg";
+
+  const PLACEHOLDER_AVATAR_SVG =
+    "https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:1080:1080.jpeg";
 
   let debounceTimeout = null;
   let fetchController = null;
@@ -370,7 +389,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch(apiUrl, { signal });
       if (!response.ok) return null;
       const result = await response.json();
-      if (!result.data || !result.data.unique_id || result.data.unique_id === "No unique_id found") return null;
+      if (
+        !result.data ||
+        !result.data.unique_id ||
+        result.data.unique_id === "No unique_id found"
+      )
+        return null;
       return {
         uniqueId: result.data.unique_id,
         nickname: result.data.nickname,
@@ -438,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = inputElement.value.trim().replace(/^@+/, "");
     clearTimeout(debounceTimeout);
     if (fetchController) fetchController.abort();
-    
+
     if (!username) {
       hideProfilePreview();
       return;
