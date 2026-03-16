@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log in | App</title>
+    <title>Activate License | App</title>
 
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -91,8 +91,17 @@
         text-align: center;
         font-size: 32px;
         font-weight: 700;
-        margin-bottom: 30px;
+        margin-bottom: 8px;
         color: var(--text-primary);
+      }
+
+      p.subtitle {
+        text-align: center;
+        font-size: 15px;
+        color: var(--text-secondary);
+        margin-bottom: 30px;
+        font-weight: 400;
+        line-height: 1.4;
       }
 
       /* --- Inputs --- */
@@ -111,11 +120,16 @@
         color: var(--text-primary);
         outline: none;
         transition: all 0.2s ease;
+        text-transform: uppercase; /* Forces key to be uppercase visually */
+        letter-spacing: 1px;
+        font-weight: 500;
       }
 
       .input-group input::placeholder {
         color: var(--text-tertiary);
         font-weight: 400;
+        text-transform: none;
+        letter-spacing: normal;
       }
 
       .input-group input:focus {
@@ -179,7 +193,7 @@
         font-weight: 500;
       }
 
-      /* --- Footer (Toggle) --- */
+      /* --- Footer (Logout) --- */
       .footer {
         text-align: center;
         font-size: 15px;
@@ -187,42 +201,35 @@
       }
 
       .footer a {
-        color: var(--primary-red);
+        color: var(--text-secondary);
         text-decoration: none;
         font-weight: 600;
-        margin-left: 5px;
+        transition: color 0.2s;
       }
 
       .footer a:hover {
+        color: var(--primary-red);
         text-decoration: underline;
       }
     </style>
   </head>
   <body>
     <div class="auth-container">
-      <h2 class="title" id="form-title">Log in</h2>
+      <h2 class="title">Access Key</h2>
+      <p class="subtitle">
+        Enter your valid license key to unlock the dashboard.
+      </p>
 
       <div class="input-group">
         <input
-          type="email"
-          id="email"
-          placeholder="Email address"
-          required
-          autocomplete="email"
+          type="text"
+          id="key-input"
+          placeholder="XXXX-XXXX-XXXX"
+          autocomplete="off"
         />
       </div>
 
-      <div class="input-group">
-        <input
-          type="password"
-          id="password"
-          placeholder="Password"
-          required
-          autocomplete="current-password"
-        />
-      </div>
-
-      <button id="submit-btn" class="btn-primary" disabled>Log in</button>
+      <button id="activate-btn" class="btn-primary" disabled>Continue</button>
 
       <div id="status-msg"></div>
 
@@ -231,13 +238,11 @@
       </div>
 
       <div class="footer">
-        <span id="toggle-text">Don't have an account?</span>
-        <a href="#" id="toggle-link">Sign up</a>
+        <a href="#" id="logout-btn">Log out of account</a>
       </div>
     </div>
 
     <script>
-      // --- SUPABASE SETUP ---
       const SUPABASE_URL = "https://odhxccqsrvkfwvpjjmof.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kaHhjY3FzcnZrZnd2cGpqbW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNDk5NzAsImV4cCI6MjA4NzkyNTk3MH0.rjyZ-GLvt2o-nwOWeUFWkdbzUG4ZXZOilYw8PHKovs8";
@@ -246,118 +251,92 @@
         SUPABASE_ANON_KEY,
       );
 
-      /* --- Guard: Check if already logged in --- */
-      (async function checkSession() {
+      /* --- 1. Guard (Run Immediately) --- */
+      (async function guard() {
         const {
           data: { session },
         } = await supabaseClient.auth.getSession();
-        if (session) {
-          window.location.replace("key.html"); // Send to key page immediately
+
+        // If not logged in, kick to index.html
+        if (!session) {
+          window.location.replace("index.html");
+          return;
+        }
+
+        // Check if user already has an ACTIVE key
+        const { data: activeKey } = await supabaseClient
+          .from("keys")
+          .select("id")
+          .gt("expiration_timestamp", new Date().toISOString())
+          .limit(1);
+
+        // If key is valid, skip this page and go straight home!
+        if (activeKey && activeKey.length > 0) {
+          window.location.replace("home.html");
         }
       })();
 
-      // --- UI Elements ---
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-      const submitBtn = document.getElementById("submit-btn");
+      /* --- 2. UI Interaction Logic --- */
+      const keyInput = document.getElementById("key-input");
+      const activateBtn = document.getElementById("activate-btn");
       const statusMsg = document.getElementById("status-msg");
-      const formTitle = document.getElementById("form-title");
-      const toggleText = document.getElementById("toggle-text");
-      const toggleLink = document.getElementById("toggle-link");
 
-      let isLoginMode = true; // State tracker
-
-      // --- Enable/Disable Button based on input ---
-      function checkInputs() {
-        if (
-          emailInput.value.trim() !== "" &&
-          passwordInput.value.trim() !== ""
-        ) {
-          submitBtn.removeAttribute("disabled");
+      // Enable/disable button based on typing
+      keyInput.addEventListener("input", function () {
+        if (this.value.trim().length > 0) {
+          activateBtn.removeAttribute("disabled");
         } else {
-          submitBtn.setAttribute("disabled", "true");
-        }
-      }
-
-      emailInput.addEventListener("input", checkInputs);
-      passwordInput.addEventListener("input", checkInputs);
-
-      // --- Toggle Login / Sign Up Mode ---
-      toggleLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        isLoginMode = !isLoginMode;
-        statusMsg.innerText = ""; // clear messages
-
-        if (isLoginMode) {
-          formTitle.innerText = "Log in";
-          submitBtn.innerText = "Log in";
-          toggleText.innerText = "Don't have an account?";
-          toggleLink.innerText = "Sign up";
-        } else {
-          formTitle.innerText = "Sign up";
-          submitBtn.innerText = "Sign up";
-          toggleText.innerText = "Already have an account?";
-          toggleLink.innerText = "Log in";
+          activateBtn.setAttribute("disabled", "true");
         }
       });
 
-      // --- Auth Logic (Sign in & Sign up) ---
-      submitBtn.addEventListener("click", async () => {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
+      /* --- 3. RPC Activation Logic (ULTRA SECURE) --- */
+      activateBtn.addEventListener("click", async () => {
+        const key = keyInput.value.trim().toUpperCase(); // Force uppercase for backend
+        if (!key) return;
 
-        if (!email || !password) return;
-
-        // UI Loading state
-        submitBtn.setAttribute("disabled", "true");
-        submitBtn.innerText = "Processing...";
+        // UI Loading State
         statusMsg.style.color = "var(--text-secondary)";
-        statusMsg.innerText = "Please wait...";
+        statusMsg.innerText = "Verifying secure key...";
+        activateBtn.innerText = "Processing...";
+        activateBtn.setAttribute("disabled", "true");
 
         try {
-          let result;
-          if (isLoginMode) {
-            // LOGIN
-            result = await supabaseClient.auth.signInWithPassword({
-              email,
-              password,
-            });
-          } else {
-            // SIGN UP
-            result = await supabaseClient.auth.signUp({ email, password });
-          }
+          // Secure server-side call
+          const { data, error } = await supabaseClient.rpc("redeem_key", {
+            input_key: key,
+          });
 
-          if (result.error) throw result.error;
+          if (error) throw new Error("System error. Please try again.");
+          if (!data || data.success === false)
+            throw new Error(data.message || "Invalid serial key.");
 
           // SUCCESS
           statusMsg.style.color = "var(--success-green)";
+          statusMsg.innerText = "Success! Unlocking dashboard...";
 
-          if (!isLoginMode && result.data?.user?.identities?.length === 0) {
-            // Edge case: User already exists during sign up
-            throw new Error("User already exists. Please log in.");
-          }
-
-          if (!isLoginMode) {
-            statusMsg.innerText = "Account created! Redirecting...";
-          } else {
-            statusMsg.innerText = "Login successful! Redirecting...";
-          }
-
-          // Wait 1 second then redirect to key verification
           setTimeout(() => {
-            window.location.replace("key.html");
-          }, 1000);
-        } catch (error) {
-          // ERROR
-          console.error("Auth Error:", error);
+            window.location.replace("home.html");
+          }, 1500);
+        } catch (err) {
+          // FAILURE
           statusMsg.style.color = "var(--error-red)";
-          statusMsg.innerText = error.message;
+          statusMsg.innerText = err.message;
 
-          // Reset UI
-          submitBtn.removeAttribute("disabled");
-          submitBtn.innerText = isLoginMode ? "Log in" : "Sign up";
+          // Reset button
+          activateBtn.innerText = "Continue";
+          activateBtn.removeAttribute("disabled");
         }
       });
+
+      /* --- 4. Logout feature --- */
+      document
+        .getElementById("logout-btn")
+        .addEventListener("click", async (e) => {
+          e.preventDefault();
+          await supabaseClient.auth.signOut();
+          window.location.replace("index.html");
+        });
     </script>
   </body>
 </html>
