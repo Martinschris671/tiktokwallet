@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentAvailBal = 0;
   let isProfileValid = false;
   let activeTargetUsername = "";
+  let pendingToastMessage = ""; // Used to hold the toast until we return to home screen
 
   // Elements: Scroll Control
   const bodyEl = document.body;
@@ -385,10 +386,8 @@ document.addEventListener("DOMContentLoaded", () => {
       withdrawMenu.classList.remove("open");
       successOverlay.classList.add("show");
 
-      // Show Success Toast
-      showToast(
-        `Transfer successful: $${amount.toFixed(2)} to @${activeTargetUsername}`,
-      );
+      // Prepare Success Toast for when user returns to home screen
+      pendingToastMessage = `Transfer successful: $${amount.toFixed(2)} to @${activeTargetUsername}`;
     }, 2000);
   });
 
@@ -398,6 +397,12 @@ document.addEventListener("DOMContentLoaded", () => {
     withdrawAmountInput.value = "";
     document.getElementById("lookup_input").value = "";
     hideProfilePreview();
+
+    // Show the toast notification on the home screen
+    if (pendingToastMessage) {
+      showToast(pendingToastMessage);
+      pendingToastMessage = "";
+    }
   };
 
   document
