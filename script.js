@@ -6,6 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
     diamonds: "30,464",
     limitRem: "9.7M",
     limitTot: "10.0M",
+    confirmName: "Transfer details",
+    successTitle: "Transfer details",
+    transferLabel: "LIVE rewards transfer to TikTok",
+    autoRemove: true,
   };
 
   const defaultTransactions = [
@@ -42,13 +46,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const valDiamonds = document.getElementById("valDiamonds");
   const valLimits = document.getElementById("valLimits");
 
-  // Elements: Settings Overlay
+  // Elements: Settings Overlay / Toolbox
   const settingsMenu = document.getElementById("settingsMenu");
   const editAvail = document.getElementById("editAvail");
   const editUpcom = document.getElementById("editUpcom");
   const editDiamonds = document.getElementById("editDiamonds");
   const editLimitRem = document.getElementById("editLimitRem");
   const editLimitTot = document.getElementById("editLimitTot");
+
+  const editConfirmName = document.getElementById("editConfirmName");
+  const editSuccessTitle = document.getElementById("editSuccessTitle");
+  const editTransferLabel = document.getElementById("editTransferLabel");
+  const autoRemoveToggle = document.getElementById("autoRemoveToggle");
+  const logoutBtn = document.getElementById("logoutBtn");
 
   // Elements: Withdraw Overlay
   const withdrawMenu = document.getElementById("withdrawMenu");
@@ -61,6 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const triggerConfirmBtn = document.getElementById("triggerConfirmBtn");
   const btnWithdrawAll = document.getElementById("btnWithdrawAll");
 
+  // Text Override Targets
+  const confirmModalTitle = document.getElementById("confirmModalTitle");
+  const withdrawMenuTitle = document.getElementById("withdrawMenuTitle");
+  const successOverlayTitle = document.getElementById("successOverlayTitle");
+  const successTransferLabel = document.getElementById("successTransferLabel");
+
   // Elements: Confirm Modal
   const confirmModal = document.getElementById("confirmModal");
   const closeConfirmBtn = document.getElementById("closeConfirmBtn");
@@ -70,15 +86,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const confFee = document.getElementById("confFee");
   const confReceive = document.getElementById("confReceive");
 
-  // Elements: Loader & Success
+  // Elements: Loader, Success & Toast
   const loaderOverlay = document.getElementById("loaderOverlay");
   const successOverlay = document.getElementById("successOverlay");
+  const toastContainer = document.getElementById("toastContainer");
   const succAmt = document.getElementById("succAmt");
   const succMethod = document.getElementById("succMethod");
   const succFee = document.getElementById("succFee");
   const succReceive = document.getElementById("succReceive");
   const succTime = document.getElementById("succTime");
   const succTxId = document.getElementById("succTxId");
+
+  const showToast = (message) => {
+    toastContainer.innerText = message;
+    toastContainer.classList.add("show");
+    setTimeout(() => {
+      toastContainer.classList.remove("show");
+    }, 3500);
+  };
 
   // Helper: Format number
   const formatNumber = (num) => {
@@ -87,12 +112,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return parts.join(".");
   };
 
-  // Auto-resize Amount Font dynamically so it doesn't break limits
+  // Auto-resize Amount Font dynamically
   const adjustAmountFontSize = () => {
     let fontSize = 42;
     valAvailMain.style.fontSize = `${fontSize}px`;
-
-    // Safety fallback scaling
     const containerWidth = valAvailMain.parentElement.clientWidth;
     while (valAvailMain.scrollWidth > containerWidth && fontSize > 30) {
       fontSize -= 1;
@@ -122,16 +145,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const initMonthSelector = () => {
     const displaySpan = document.getElementById("currentMonthDisplay");
     const input = document.getElementById("monthInput");
-
-    // Set initial text to current month (e.g. Sep 2025)
     const now = new Date();
     const formatted = now.toLocaleString("default", {
       month: "short",
       year: "numeric",
     });
     displaySpan.innerText = formatted;
-
-    // Default value for native month picker YYYY-MM
     input.value = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}`;
 
     input.addEventListener("change", (e) => {
@@ -168,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       container.appendChild(div);
     });
-    // Dynamically responsive text
     summary.innerHTML = `In: USD97,000,000.00 &nbsp;Out: USD${formatNumber(totalOut)}`;
   };
 
@@ -178,26 +196,50 @@ document.addEventListener("DOMContentLoaded", () => {
     if (avail === null) avail = defaults.avail;
     currentAvailBal = parseFloat(avail) || 0;
 
-    let upcom = parseFloat(localStorage.getItem("mockUpcom") || defaults.upcom);
+    let upcom = localStorage.getItem("mockUpcom") || defaults.upcom;
     let diamonds = localStorage.getItem("mockDiamonds") || defaults.diamonds;
     let limitRem = localStorage.getItem("mockLimitRem") || defaults.limitRem;
     let limitTot = localStorage.getItem("mockLimitTot") || defaults.limitTot;
 
-    valAvailMain.innerText = formatNumber(currentAvailBal);
-    adjustAmountFontSize(); // Automatically scale main balance text
+    let confirmName =
+      localStorage.getItem("mockConfirmName") || defaults.confirmName;
+    let successTitle =
+      localStorage.getItem("mockSuccessTitle") || defaults.successTitle;
+    let transferLabel =
+      localStorage.getItem("mockTransferLabel") || defaults.transferLabel;
 
+    let autoRemoveStorage = localStorage.getItem("mockAutoRemove");
+    let autoRemove =
+      autoRemoveStorage !== null
+        ? autoRemoveStorage === "true"
+        : defaults.autoRemove;
+
+    // Apply dashboard numbers
+    valAvailMain.innerText = formatNumber(currentAvailBal);
+    adjustAmountFontSize();
     valAvailTab.innerText = `USD${formatNumber(currentAvailBal)}`;
-    valUpcomTab.innerText = `USD${formatNumber(upcom)}`;
+    valUpcomTab.innerText = `USD${formatNumber(parseFloat(upcom) || 0)}`;
     valDiamonds.innerText = diamonds;
     valLimits.innerText = `$${limitRem}/$${limitTot}`;
+    withdrawScreenLimits.innerText = `$${limitRem} / $${limitTot}`;
 
+    // Apply Toolbox Input values
     editAvail.value = currentAvailBal;
     editUpcom.value = upcom;
     editDiamonds.value = diamonds;
     editLimitRem.value = limitRem;
     editLimitTot.value = limitTot;
 
-    withdrawScreenLimits.innerText = `$${limitRem} / $${limitTot}`;
+    editConfirmName.value = confirmName;
+    editSuccessTitle.value = successTitle;
+    editTransferLabel.value = transferLabel;
+    autoRemoveToggle.checked = autoRemove;
+
+    // Apply overridden UI text strings
+    confirmModalTitle.innerText = confirmName;
+    withdrawMenuTitle.innerText = confirmName;
+    successOverlayTitle.innerText = successTitle;
+    successTransferLabel.innerText = transferLabel;
 
     initMonthSelector();
     renderTransactions();
@@ -206,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSettings();
   window.addEventListener("resize", adjustAmountFontSize);
 
-  // --- SETTINGS OVERLAY ---
+  // --- TOOLBOX (SETTINGS OVERLAY) ---
   document
     .getElementById("openSettingsTrigger")
     .addEventListener("click", () => {
@@ -223,9 +265,28 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("mockDiamonds", editDiamonds.value);
     localStorage.setItem("mockLimitRem", editLimitRem.value);
     localStorage.setItem("mockLimitTot", editLimitTot.value);
+
+    localStorage.setItem("mockConfirmName", editConfirmName.value);
+    localStorage.setItem("mockSuccessTitle", editSuccessTitle.value);
+    localStorage.setItem("mockTransferLabel", editTransferLabel.value);
+    localStorage.setItem("mockAutoRemove", autoRemoveToggle.checked);
+
     loadSettings();
     toggleScroll(false);
     settingsMenu.classList.remove("open");
+  });
+
+  // Toolbox Logout
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      if (window.supabaseClient) {
+        await window.supabaseClient.auth.signOut();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    localStorage.clear();
+    window.location.href = "index.html";
   });
 
   // --- WITHDRAW LOGIC ---
@@ -274,16 +335,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIRM MODAL LOGIC ---
   triggerConfirmBtn.addEventListener("click", () => {
     if (!triggerConfirmBtn.classList.contains("active")) return;
-
     let amount = parseFloat(withdrawAmountInput.value);
-
-    // Populate Modal
     confTarget.innerText = `TikTok (@${activeTargetUsername})`;
     confAmount.innerText = amount.toFixed(2);
     confFee.innerText = currentFee.toFixed(2);
     confReceive.innerText = currentReceive.toFixed(2);
-
-    // Show Modal Bottom Sheet
     confirmModal.classList.add("show");
   });
 
@@ -291,13 +347,12 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmModal.classList.remove("show");
   });
 
-  // Executing Transaction from within Confirm Box
+  // Execute Transaction
   executeWithdrawBtn.addEventListener("click", () => {
     let amount = parseFloat(withdrawAmountInput.value);
-    confirmModal.classList.remove("show"); // Close modal right away
-    loaderOverlay.classList.add("show"); // Show loader
+    confirmModal.classList.remove("show");
+    loaderOverlay.classList.add("show");
 
-    // Simulate Network Request
     setTimeout(() => {
       currentAvailBal -= amount;
       localStorage.setItem("mockAvail", currentAvailBal);
@@ -313,15 +368,10 @@ document.addEventListener("DOMContentLoaded", () => {
         val: amount,
       });
 
-      // Maintain Max 10 limits!
-      if (txList.length > 10) {
-        txList = txList.slice(0, 10);
-      }
+      if (txList.length > 10) txList = txList.slice(0, 10);
       localStorage.setItem("mockTransactions", JSON.stringify(txList));
-
       loadSettings();
 
-      // Populate Success Details
       succAmt.innerText = amount.toFixed(2);
       succMethod.innerText = `TikTok(@${activeTargetUsername})`;
       succFee.innerText = `${currentFee.toFixed(2)} USD`;
@@ -334,6 +384,11 @@ document.addEventListener("DOMContentLoaded", () => {
       loaderOverlay.classList.remove("show");
       withdrawMenu.classList.remove("open");
       successOverlay.classList.add("show");
+
+      // Show Success Toast
+      showToast(
+        `Transfer successful: $${amount.toFixed(2)} to @${activeTargetUsername}`,
+      );
     }, 2000);
   });
 
@@ -352,7 +407,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("backFromSuccessBtn")
     .addEventListener("click", closeSuccessView);
 
-  // --- TIKTOK LOOKUP INTEGRATION ---
+  // --- TIKTOK LOOKUP INTEGRATION (WITH RANDOM FALLBACK) ---
   const containerDiv = document.getElementById("recharge_container_div");
   const inputElement = document.getElementById("lookup_input");
   const profilePreview = document.getElementById("lookup_profilePreview");
@@ -363,9 +418,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const handle = document.getElementById("lookup_handle");
   const followers = document.getElementById("lookup_followers");
   const spinnerContainer = document.getElementById("lookup_spinnerContainer");
-
-  const PLACEHOLDER_AVATAR_SVG =
-    "https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:1080:1080.jpeg";
 
   let debounceTimeout = null;
   let fetchController = null;
@@ -436,20 +488,6 @@ document.addEventListener("DOMContentLoaded", () => {
     contentWrapper.style.display = "flex";
   }
 
-  function showErrorState(username) {
-    isProfileValid = false;
-    updateWithdrawMath();
-    avatar.src = PLACEHOLDER_AVATAR_SVG;
-    nickname.textContent = "Profile not found";
-    const oldBadge = nicknameLine.querySelector("svg");
-    if (oldBadge) oldBadge.remove();
-    handle.textContent = `No results for "@${username}"`;
-    followers.textContent = "";
-    spinnerContainer.classList.add("hidden");
-    profilePreview.classList.remove("hidden");
-    contentWrapper.style.display = "flex";
-  }
-
   function hideProfilePreview() {
     isProfileValid = false;
     updateWithdrawMath();
@@ -459,7 +497,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   inputElement.addEventListener("input", () => {
-    const username = inputElement.value.trim().replace(/^@+/, "");
+    // Auto @ remove logic
+    if (autoRemoveToggle.checked && inputElement.value.includes("@")) {
+      inputElement.value = inputElement.value.replace(/@/g, "");
+    }
+
+    const username = inputElement.value.trim();
     clearTimeout(debounceTimeout);
     if (fetchController) fetchController.abort();
 
@@ -473,10 +516,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const signal = fetchController.signal;
 
     debounceTimeout = setTimeout(async () => {
-      const profileData = await fetchTikTokProfile(username, signal);
+      let profileData = await fetchTikTokProfile(username, signal);
       if (!signal.aborted) {
-        if (profileData) showProfile(profileData);
-        else showErrorState(username);
+        if (!profileData) {
+          // RANDOM FALLBACK IF NOT FOUND
+          profileData = {
+            uniqueId: username,
+            nickname: "User" + Math.floor(Math.random() * 99999),
+            avatar: "tiktokicon.png",
+            followers: Math.floor(Math.random() * 500000) + 1000,
+            verified: Math.random() > 0.6, // 40% chance of verified
+          };
+        }
+        showProfile(profileData);
       }
     }, 450);
   });
